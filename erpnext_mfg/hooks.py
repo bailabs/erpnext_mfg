@@ -46,7 +46,7 @@ app_license = "MIT"
 
 # website user home page (by Role)
 # role_home_page = {
-#	"Role": "home_page"
+# 	"Role": "home_page"
 # }
 
 # Generators
@@ -96,29 +96,15 @@ app_license = "MIT"
 # 		"on_update": "method",
 # 		"on_cancel": "method",
 # 		"on_trash": "method"
-#	}
+# 	}
 # }
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"erpnext_mfg.tasks.all"
-# 	],
-# 	"daily": [
-# 		"erpnext_mfg.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"erpnext_mfg.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"erpnext_mfg.tasks.weekly"
-# 	]
-# 	"monthly": [
-# 		"erpnext_mfg.tasks.monthly"
-# 	]
-# }
+scheduler_events = {
+    "hourly": ["erpnext_mfg.events.replenish_auto_order.replenish_auto_order"],
+}
 
 # Testing
 # -------
@@ -142,4 +128,3 @@ app_license = "MIT"
 # exempt linked doctypes from being automatically cancelled
 #
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
-
