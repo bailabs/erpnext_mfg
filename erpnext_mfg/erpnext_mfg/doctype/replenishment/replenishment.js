@@ -6,3 +6,18 @@ frappe.ui.form.on('Replenishment', {
 
 	// }
 });
+
+
+frappe.ui.form.on('Replenishment Item', {
+  order_now: function (frm, cdt, cdn) {
+    _replenish_item(cdn);
+  }
+});
+
+
+async function _replenish_item(name) {
+  const response = frappe.call({
+    method: 'erpnext_mfg.api.replenishment.replenish_item',
+    args: { name },
+  });
+}
