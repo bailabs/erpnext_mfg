@@ -1,0 +1,66 @@
+{
+ "actions": [],
+ "creation": "2021-04-26 19:14:27.131014",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item",
+  "min_qty",
+  "max_qty",
+  "column_break_4",
+  "order_qty",
+  "is_auto_order"
+ ],
+ "fields": [
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "min_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Min Qty"
+  },
+  {
+   "fieldname": "max_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Max Qty"
+  },
+  {
+   "fieldname": "order_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Order Qty"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "description": "When `Auto Order` is set, `Max Qty` should be set.",
+   "fieldname": "is_auto_order",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Auto Order"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2021-04-26 22:02:41.262249",
+ "modified_by": "Administrator",
+ "module": "Erpnext Mfg",
+ "name": "Replenishment Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
