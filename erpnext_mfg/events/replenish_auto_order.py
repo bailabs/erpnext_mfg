@@ -11,20 +11,20 @@ def replenish_auto_order():
 
     warehouse = frappe.db.get_single_value("Replenishment", "warehouse")
     for item in replenishment_items:
-        projected_qty = _get_projected_qty(
+        projected_qty = get_projected_qty(
             item.get("item"),
             warehouse,
         )
         order_with_projected_qty = projected_qty + item.get("order_qty")
         if item.get("max_qty") >= order_with_projected_qty:
-            _create_po_from_item(
+            create_po_from_item(
                 item.get("item"),
                 item.get("order_qty"),
                 warehouse,
             )
 
 
-def _create_po_from_item(item, qty, warehouse):
+def create_po_from_item(item, qty, warehouse):
     po = frappe.new_doc("Purchase Order")
 
     supplier = frappe.db.get_single_value("Replenishment", "supplier")
@@ -43,7 +43,7 @@ def _create_po_from_item(item, qty, warehouse):
     po.submit()
 
 
-def _get_projected_qty(item, warehouse):
+def get_projected_qty(item, warehouse):
     bin_detail = frappe.get_all(
         "Bin",
         filters={
