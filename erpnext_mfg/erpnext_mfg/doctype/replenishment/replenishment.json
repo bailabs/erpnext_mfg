@@ -28,6 +28,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "description": "This will be the default Supplier to be set on new orders. If you want a specific Item to have a specific supplier, you can set it under the Item row",
    "fieldname": "supplier",
    "fieldtype": "Link",
    "label": "Supplier",
@@ -38,7 +39,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-04-26 21:39:06.063150",
+ "modified": "2021-04-28 21:59:44.579171",
  "modified_by": "Administrator",
  "module": "Erpnext Mfg",
  "name": "Replenishment",
