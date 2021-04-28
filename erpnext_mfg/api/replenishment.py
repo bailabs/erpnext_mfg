@@ -8,7 +8,7 @@ def replenish_item(name):
     replenishment_item = frappe.get_all(
         "Replenishment Item",
         filters={"name": name},
-        fields=["item", "order_qty", "max_qty"],
+        fields=["item", "order_qty", "max_qty", "supplier"],
     )
 
     if replenishment_item:
@@ -24,6 +24,7 @@ def replenish_item(name):
                 item.get("item"),
                 item.get("order_qty"),
                 warehouse,
+                item.get("supplier"),
             )
             frappe.msgprint(_("Successfully created a Purchase Order"))
         else:

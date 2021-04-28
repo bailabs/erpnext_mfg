@@ -6,7 +6,7 @@ def replenish_auto_order():
     replenishment_items = frappe.get_all(
         "Replenishment Item",
         filters={"is_auto_order": 1},
-        fields=["item", "order_qty", "max_qty"],
+        fields=["item", "order_qty", "max_qty", "supplier"],
     )
 
     warehouse = frappe.db.get_single_value("Replenishment", "warehouse")
@@ -21,13 +21,15 @@ def replenish_auto_order():
                 item.get("item"),
                 item.get("order_qty"),
                 warehouse,
+                item.get("supplier"),
             )
 
 
-def create_po_from_item(item, qty, warehouse):
-    po = frappe.new_doc("Purchase Order")
+def create_po_from_item(item, qty, warehouse, supplier=None):
+    if not supplier:
+        supplier = frappe.db.get_single_value("Replenishment", "supplier")
 
-    supplier = frappe.db.get_single_value("Replenishment", "supplier")
+    po = frappe.new_doc("Purchase Order")
     po.supplier = supplier
     po.set_warehouse = warehouse
 
