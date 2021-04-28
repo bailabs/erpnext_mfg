@@ -2,9 +2,7 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Replenishment', {
-	// refresh: function(frm) {
-
-	// }
+  pull_requested_items_btn: _pull_requested_items,
 });
 
 
@@ -20,4 +18,14 @@ async function _replenish_item(name) {
     method: 'erpnext_mfg.api.replenishment.replenish_item',
     args: { name },
   });
+}
+
+
+async function _pull_requested_items(frm) {
+  const response = await frappe.call({
+    method: 'erpnext_mfg.api.replenishment.pull_requested_items',
+  });
+  if (response && response.message) {
+    frm.reload_doc();
+  }
 }
