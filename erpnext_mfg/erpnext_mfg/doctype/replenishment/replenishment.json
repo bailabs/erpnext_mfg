@@ -8,8 +8,8 @@
   "warehouse",
   "supplier",
   "section_break_2",
-  "items",
-  "pull_requested_items_btn"
+  "pull_requested_items_btn",
+  "items"
  ],
  "fields": [
   {
@@ -45,7 +45,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-04-28 22:11:35.707771",
+ "modified": "2021-05-11 04:22:18.069453",
  "modified_by": "Administrator",
  "module": "Erpnext Mfg",
  "name": "Replenishment",
