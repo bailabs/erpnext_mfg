@@ -1,6 +1,9 @@
 import frappe
 from frappe import _
-from erpnext_mfg.events.replenish_auto_order import get_projected_qty, create_po_from_item
+from erpnext_mfg.events.replenish_auto_order import (
+    get_projected_qty,
+    create_po_from_item,
+)
 
 
 @frappe.whitelist()  # erpnext_mfg.api.replenishment.replenish_item
@@ -30,7 +33,7 @@ def replenish_item(name):
         else:
             frappe.throw(
                 _("Projected Qty + Order Qty would be greater than the Max Qty."),
-                title=_("Unable to create Purchase Order")
+                title=_("Unable to create Purchase Order"),
             )
 
 
@@ -48,13 +51,35 @@ def pull_requested_items():
         as_dict=1,
     )
 
+    reorder_details = _get_item_reorder_details(
+        [x.get("item_code") for x in requested_items]
+    )
+
     replenishment = frappe.get_doc("Replenishment")
     for item in requested_items:
-        replenishment.append("items", {
-            "item": item.get("item_code"),
-            "order_qty": item.get("requested_qty"),
-        })
+        item_code = item.get("item_code")
+        item_reorder = reorder_details.get(item_code, {})
+        replenishment.append(
+            "items",
+            {
+                "item": item_code,
+                "order_qty": item.get("requested_qty"),
+                "min_qty": item_reorder.get("warehouse_reorder_level"),
+                "max_qty": item_reorder.get("warehouse_reorder_qty")
+            },
+        )
 
     replenishment.save()
 
+    frappe.msgprint(_("Successfully pulled requested items"))
+
     return replenishment
+
+
+def _get_item_reorder_details(items):
+    item_reorders = frappe.get_all(
+        "Item Reorder",
+        filters={"parent": ("in", items)},
+        fields=["parent", "warehouse_reorder_level", "warehouse_reorder_qty"],
+    )
+    return {x.get("parent"): x for x in item_reorders}
