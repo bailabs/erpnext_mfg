@@ -1,4 +1,5 @@
 import frappe
+from frappe import _
 
 
 # bench execute erpnext_mfg.events.replenish_auto_order.replenish_auto_order
@@ -54,4 +55,6 @@ def get_projected_qty(item, warehouse):
         },
         fields=["projected_qty"]
     )
+    if not bin_detail:
+        frappe.throw(_("Please the selected item and its warehouse. It should match from where it is requested."))
     return bin_detail[0].get("projected_qty") if bin_detail else None
