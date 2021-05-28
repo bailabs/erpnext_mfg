@@ -9,7 +9,10 @@ frappe.ui.form.on('Replenishment', {
 frappe.ui.form.on('Replenishment Item', {
   order_now: function (frm, cdt, cdn) {
     _replenish_item(cdn);
-  }
+  },
+  details: function (frm, cdt, cdn) {
+    _show_details(cdn);
+  },
 });
 
 
@@ -28,4 +31,12 @@ async function _pull_requested_items(frm) {
   if (response && response.message) {
     frm.reload_doc();
   }
+}
+
+
+function _show_details(name) {
+  const response = frappe.call({
+    method: 'erpnext_mfg.api.replenishment.show_details',
+    args: { name },
+  });
 }

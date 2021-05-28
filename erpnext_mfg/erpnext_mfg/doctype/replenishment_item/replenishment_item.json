@@ -6,6 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "item",
+  "details",
   "min_qty",
   "max_qty",
   "supplier",
@@ -67,12 +68,19 @@
    "fieldtype": "Link",
    "label": "Supplier",
    "options": "Supplier"
+  },
+  {
+   "columns": 1,
+   "fieldname": "details",
+   "fieldtype": "Button",
+   "in_list_view": 1,
+   "label": "Details"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-04-28 22:00:21.897532",
+ "modified": "2021-05-28 09:26:22.833384",
  "modified_by": "Administrator",
  "module": "Erpnext Mfg",
  "name": "Replenishment Item",

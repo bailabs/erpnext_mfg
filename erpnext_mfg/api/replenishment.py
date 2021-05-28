@@ -37,6 +37,24 @@ def replenish_item(name):
             )
 
 
+@frappe.whitelist()
+def show_details(name):
+    replenishment_item = frappe.get_all(
+        "Replenishment Item",
+        filters={"name": name},
+        fields=["item", "order_qty", "max_qty", "supplier"],
+    )
+
+    if replenishment_item:
+        item = replenishment_item[0]
+        item_code = item.get("item")
+        bin_details = _get_bin_details(item_code)
+        frappe.msgprint(
+            _get_formatted_bin_details(bin_details),
+            title=_("{} Bin Details".format(item_code)),
+        )
+
+
 @frappe.whitelist()  # erpnext_mfg.api.replenishment.pull_requested_items
 def pull_requested_items():
     requested_items = frappe.db.sql(
@@ -65,7 +83,7 @@ def pull_requested_items():
                 "item": item_code,
                 "order_qty": item.get("requested_qty"),
                 "min_qty": item_reorder.get("warehouse_reorder_level"),
-                "max_qty": item_reorder.get("warehouse_reorder_qty")
+                "max_qty": item_reorder.get("warehouse_reorder_qty"),
             },
         )
 
@@ -83,3 +101,30 @@ def _get_item_reorder_details(items):
         fields=["parent", "warehouse_reorder_level", "warehouse_reorder_qty"],
     )
     return {x.get("parent"): x for x in item_reorders}
+
+
+def _get_bin_details(item):
+    return frappe.get_all(
+        "Bin",
+        filters={"item_code": item},
+        fields=["warehouse", "projected_qty", "actual_qty"],
+    )
+
+
+def _get_formatted_bin_details(bin_details):
+    formatted = []
+    for x in bin_details:
+        formatted.append(
+            """
+            <div>
+                <p><em>{0}</em></p>
+                <p>Projected Qty: {1}</p>
+                <p>Actual Qty: {2}</p>
+            </div>
+        """.format(
+                x.get("warehouse"),
+                x.get("projected_qty"),
+                x.get("actual_qty"),
+            )
+        )
+    return "".join(formatted)
