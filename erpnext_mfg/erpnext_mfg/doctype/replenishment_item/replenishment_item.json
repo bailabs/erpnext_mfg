@@ -8,10 +8,9 @@
   "item",
   "projected_qty",
   "actual_qty",
+  "column_break_4",
   "min_qty",
   "max_qty",
-  "supplier",
-  "column_break_4",
   "order_qty",
   "is_auto_order",
   "order_now"
@@ -65,30 +64,26 @@
    "label": "Order Now"
   },
   {
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "label": "Supplier",
-   "options": "Supplier"
-  },
-  {
    "columns": 1,
    "fieldname": "actual_qty",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Actual Qty"
+   "label": "Actual Qty",
+   "read_only": 1
   },
   {
    "columns": 1,
    "fieldname": "projected_qty",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Projected Qty"
+   "label": "Projected Qty",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-06-09 09:23:07.629457",
+ "modified": "2021-06-09 09:53:49.584087",
  "modified_by": "Administrator",
  "module": "Erpnext Mfg",
  "name": "Replenishment Item",
