@@ -6,6 +6,7 @@ from erpnext_mfg.events.replenish_auto_order import (
 )
 
 
+# deprecated
 @frappe.whitelist()  # erpnext_mfg.api.replenishment.replenish_item
 def replenish_item(name):
     replenishment_item = frappe.get_all(
@@ -37,6 +38,7 @@ def replenish_item(name):
             )
 
 
+# deprecated
 @frappe.whitelist()
 def show_details(name):
     replenishment_item = frappe.get_all(
@@ -55,6 +57,7 @@ def show_details(name):
         )
 
 
+# deprecated
 @frappe.whitelist()  # erpnext_mfg.api.replenishment.pull_requested_items
 def pull_requested_items():
     requested_items = frappe.db.sql(
