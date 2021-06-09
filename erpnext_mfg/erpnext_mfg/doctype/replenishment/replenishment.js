@@ -21,6 +21,9 @@ frappe.ui.form.on('Replenishment', {
 
 
 frappe.ui.form.on('Replenishment Item', {
+  item: function (frm, cdt, cdn) {
+    _set_item_qty_details(frm, cdt, cdn);
+  },
   order_now: function (frm, cdt, cdn) {
     _replenish_item(cdn);
   },
@@ -64,4 +67,23 @@ async function _load_items(frm) {
     method: 'load_items',
     doc: frm.doc,
   });
+}
+
+
+async function _get_item_qty_details(item, warehouse) {
+  const { message: data } = await frappe.call({
+    method: 'erpnext_mfg.api.replenishment.get_item_qty_details',
+    args: { item, warehouse },
+  });
+  return data;
+}
+
+
+async function _set_item_qty_details(frm, cdt, cdn) {
+  const child = locals[cdt][cdn];
+  const item_qty_details = await _get_item_qty_details(child.item, frm.doc.warehouse);
+  if (item_qty_details) {
+    frappe.model.set_value(cdt, cdn, "projected_qty", item_qty_details.projected_qty);
+    frappe.model.set_value(cdt, cdn, "actual_qty", item_qty_details.actual_qty);
+  }
 }
