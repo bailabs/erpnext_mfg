@@ -5,12 +5,14 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
+from erpnext_mfg.api.replenishment import get_item_qty_details
 
 
 class Replenishment(Document):
     def load_items(self):
         replenishment_rules = _get_replenishment_rules(self.warehouse, self.supplier)
         for data in replenishment_rules:
+            data = _with_qty_details(data, self.warehouse)
             self.append("items", data)
 
 
@@ -28,3 +30,13 @@ def _get_replenishment_rules(warehouse, supplier):
             "order_qty",
         ],
     )
+
+
+def _with_qty_details(data, warehouse):
+    item_qty_details = get_item_qty_details(
+        data.get("item"),
+        warehouse,
+    )
+    if item_qty_details:
+        data = data.update(item_qty_details)
+    return data
