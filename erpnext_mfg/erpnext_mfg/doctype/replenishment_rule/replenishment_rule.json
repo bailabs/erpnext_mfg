@@ -61,7 +61,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-06-08 05:55:26.879280",
+ "modified": "2021-06-09 09:42:34.676592",
  "modified_by": "Administrator",
  "module": "Erpnext Mfg",
  "name": "Replenishment Rule",
@@ -82,5 +82,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "title_field": "item",
  "track_changes": 1
 }
