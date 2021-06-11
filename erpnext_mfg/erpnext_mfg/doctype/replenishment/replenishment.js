@@ -3,6 +3,7 @@
 
 frappe.ui.form.on('Replenishment', {
   onload: function (frm) {
+    frm.disable_save();
     frm.set_query("warehouse", function () {
       return {
         filters: { "is_group": 0 },
