@@ -42,13 +42,54 @@ async function _replenish_item(name) {
 }
 
 
-async function _pull_requested_items(frm) {
-  const response = await frappe.call({
-    method: 'erpnext_mfg.api.replenishment.pull_requested_items',
+function _pull_requested_items(frm) {
+  const d = new frappe.ui.Dialog({
+    title: __('Pull Items'),
+    fields: [
+      {
+        label: 'Source',
+        fieldname: 'source',
+        fieldtype: 'Select',
+        options: [
+          'Work Order',
+          'Bin with Requested Qty',
+        ],
+        onchange: function () {
+          const source = d.get_value('source');
+          d.set_df_property('work_order', 'hidden', source !== 'Work Order');
+          d.set_df_property('work_order', 'reqd', source === 'Work Order');
+        },
+      },
+      {
+        label: 'Work Order',
+        fieldname: 'work_order',
+        fieldtype: 'Link',
+        options: 'Work Order',
+        hidden: 1,
+      },
+    ],
+    primary_action: async function (values) {
+      if (values.source == 'Work Order') {
+        await frm.call({
+          method: 'pull_from_work_order',
+          doc: frm.doc,
+          args: { work_order: values.work_order },
+        });
+      } else if (values.source == 'Bin with Requested Qty') {
+        await frm.call({
+          method: 'pull_from_bin',
+          doc: frm.doc,
+        });
+      }
+      d.hide();
+    }
   });
-  if (response && response.message) {
-    frm.reload_doc();
-  }
+  d.fields_dict['work_order'].df.get_query = function () {
+    return {
+      filters: { docstatus: 1 },
+    };
+  };
+  d.show();
 }
 
 
