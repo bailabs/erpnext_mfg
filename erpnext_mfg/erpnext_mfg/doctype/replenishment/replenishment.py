@@ -22,7 +22,10 @@ class Replenishment(Document):
             self.append("items", data)
 
     def pull_from_bin(self):
-        pass
+        requested_items = _get_bin_requested_items_by_warehouse(self.warehouse)
+        for data in requested_items:
+            data = _with_qty_details(data, self.warehouse)
+            self.append("items", data)
 
 
 def _get_replenishment_rules(warehouse, supplier):
@@ -56,4 +59,12 @@ def _get_required_items_by_work_order(work_order):
         "Work Order Item",
         filters={"parent": work_order},
         fields=["item_code as item", "required_qty as max_qty"],
+    )
+
+
+def _get_bin_requested_items_by_warehouse(warehouse):
+    return frappe.get_all(
+        "Bin",
+        filters={"warehouse": warehouse},
+        fields=["item_code as item", "indented_qty as order_qty"],
     )
