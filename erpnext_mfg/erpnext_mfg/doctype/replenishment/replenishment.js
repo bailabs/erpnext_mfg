@@ -12,7 +12,10 @@ frappe.ui.form.on('Replenishment', {
   },
   refresh: function (frm) {
     frm.page.set_primary_action("Update", function () {
-      frappe.msgprint(__("TODO: implement"));
+      const response = frm.call({
+        method: 'update_replenishment_rules',
+        doc: frm.doc,
+      });
     });
   },
   pull_requested_items_btn: _pull_requested_items,

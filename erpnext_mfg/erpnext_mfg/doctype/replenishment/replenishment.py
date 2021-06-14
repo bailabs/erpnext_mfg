@@ -27,6 +27,11 @@ class Replenishment(Document):
             data = _with_qty_details(data, self.warehouse)
             self.append("items", data)
 
+    def update_replenishment_rules(self):
+        if not self.warehouse or not self.supplier:
+            frappe.throw(_("Please set your warehouse and/or supplier."))
+        _clear_replenishment_rules(self.items, self.warehouse, self.supplier)
+
 
 def _get_replenishment_rules(warehouse, supplier):
     return frappe.get_all(
@@ -68,3 +73,18 @@ def _get_bin_requested_items_by_warehouse(warehouse):
         filters={"warehouse": warehouse},
         fields=["item_code as item", "indented_qty as order_qty"],
     )
+
+
+def _clear_replenishment_rules(items, warehouse, supplier):
+    existing_rules = frappe.get_all(
+        "Replenishment Rule",
+        fields=["name", "item"],
+        filters={
+            "warehouse": warehouse,
+            "supplier": supplier,
+        },
+    )
+    item_names = [x.get("item") for x in items]
+    for rule in existing_rules:
+        if rule.get("item") not in item_names:
+            frappe.delete_doc("Replenishment Rule", rule.get("name"))
