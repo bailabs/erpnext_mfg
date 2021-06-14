@@ -4,6 +4,7 @@
 
 from __future__ import unicode_literals
 import frappe
+from frappe import _
 from frappe.model.document import Document
 from erpnext_mfg.api.replenishment import get_item_qty_details
 
@@ -31,6 +32,7 @@ class Replenishment(Document):
         if not self.warehouse or not self.supplier:
             frappe.throw(_("Please set your warehouse and/or supplier."))
         _clear_replenishment_rules(self.items, self.warehouse, self.supplier)
+        frappe.msgprint(_("Replenishment Rules are updated."))
 
 
 def _get_replenishment_rules(warehouse, supplier):
