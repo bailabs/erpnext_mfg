@@ -32,6 +32,7 @@ class Replenishment(Document):
         if not self.warehouse or not self.supplier:
             frappe.throw(_("Please set your warehouse and/or supplier."))
         _clear_replenishment_rules(self.items, self.warehouse, self.supplier)
+        _create_replenishment_rules(self.items, self.warehouse, self.supplier)
         frappe.msgprint(_("Replenishment Rules are updated."))
 
 
@@ -90,3 +91,48 @@ def _clear_replenishment_rules(items, warehouse, supplier):
     for rule in existing_rules:
         if rule.get("item") not in item_names:
             frappe.delete_doc("Replenishment Rule", rule.get("name"))
+
+
+def _create_replenishment_rules(items, warehouse, supplier):
+    existing_rules = frappe.get_all(
+        "Replenishment Rule",
+        fields=["item"],
+        filters={
+            "warehouse": warehouse,
+            "supplier": supplier,
+        },
+    )
+    existing_items = [x.get("item") for x in existing_rules]
+    for item in items:
+        if item.get("item") not in existing_items:
+            rule = _get_replenishment_rule(item)
+            frappe.get_doc({
+                **rule,
+                "doctype": "Replenishment Rule",
+                "warehouse": warehouse,
+                "supplier": supplier,
+            }).insert()
+
+
+def _get_replenishment_rule(item):
+    item_dict = item.as_dict()
+    unused_keys = [
+        "name",
+        "owner",
+        "creation",
+        "modified",
+        "modified_by",
+        "parent",
+        "parentfield",
+        "parenttype",
+        "idx",
+        "docstatus",
+        "doctype",
+        "__islocal",
+        "projected_qty",
+        "actual_qty",
+        "is_auto_order",
+    ]
+    for x in unused_keys:
+        del item_dict[x]
+    return item_dict
