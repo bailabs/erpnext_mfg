@@ -111,6 +111,7 @@ async function _load_items(frm) {
   frm.call({
     method: 'load_items',
     doc: frm.doc,
+    freeze: true,
   });
 }
 
