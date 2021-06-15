@@ -152,7 +152,6 @@ def _get_replenishment_rule(item):
         "__islocal",
         "projected_qty",
         "actual_qty",
-        "is_auto_order",
     ]
     for x in unused_keys:
         del item_dict[x]
