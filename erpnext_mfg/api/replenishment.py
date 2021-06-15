@@ -46,3 +46,13 @@ def order_item(item, warehouse, supplier):
     po.submit()
 
     return po.name
+
+
+def with_qty_details(data, warehouse):
+    item_qty_details = get_item_qty_details(
+        data.get("item"),
+        warehouse,
+    )
+    if item_qty_details:
+        data = data.update(item_qty_details)
+    return data
