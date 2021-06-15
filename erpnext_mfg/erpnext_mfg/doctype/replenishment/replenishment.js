@@ -15,6 +15,7 @@ frappe.ui.form.on("Replenishment", {
       frm.call({
         method: "update_replenishment_rules",
         doc: frm.doc,
+        freeze: true,
       });
     });
   },
