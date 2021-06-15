@@ -18,12 +18,26 @@ class Replenishment(Document):
             _("Please click <strong>Update</strong> in order to save your changes.")
         )
 
+    def _set_order_qty(self):
+        for item in self.items:
+            item.order_qty = item.max_qty - item.projected_qty
+
     def load_items(self):
         self.items = []
         self._set_items(_get_replenishment_rules(self.warehouse, self.supplier))
 
     def pull_from_work_order(self, work_order):
-        self._set_items(_get_required_items_by_work_order(work_order))
+        required_items = _get_required_items_by_work_order(work_order)
+        reorder_details = _get_reorder_details(required_items)
+
+        for item in required_items:
+            item_code = item.get("item")
+            if item_code in reorder_details:
+                item["min_qty"] = reorder_details[item_code].get("min_qty")
+                item["max_qty"] = reorder_details[item_code].get("max_qty")
+
+        self._set_items(required_items)
+        self._set_order_qty()
 
     def pull_from_bin(self):
         self._set_items(_get_bin_requested_items_by_warehouse(self.warehouse))
@@ -178,3 +192,19 @@ def _get_replenishment_rule(item):
         if x in item_dict:
             del item_dict[x]
     return item_dict
+
+
+def _get_reorder_details(items):
+    def make_detail(x):
+        return {
+            "min_qty": x.get("warehouse_reorder_level"),
+            "max_qty": x.get("warehouse_reorder_qty"),
+        }
+
+    parent_items = [x.get("item") for x in items]
+    reorder_details = frappe.get_all(
+        "Item Reorder",
+        filters={"parent": ["in", parent_items]},
+        fields=["parent", "warehouse_reorder_level", "warehouse_reorder_qty"],
+    )
+    return {x.get("parent"): make_detail(x) for x in reorder_details}
