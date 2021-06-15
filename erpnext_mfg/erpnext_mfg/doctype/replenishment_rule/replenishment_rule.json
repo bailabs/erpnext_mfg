@@ -9,6 +9,7 @@
   "supplier",
   "warehouse",
   "column_break_4",
+  "disabled",
   "order_qty",
   "min_qty",
   "max_qty"
@@ -57,11 +58,17 @@
    "label": "Warehouse",
    "options": "Warehouse",
    "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-06-09 09:42:34.676592",
+ "modified": "2021-06-15 04:03:45.268212",
  "modified_by": "Administrator",
  "module": "Erpnext Mfg",
  "name": "Replenishment Rule",
