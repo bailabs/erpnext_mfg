@@ -17,6 +17,7 @@ class Replenishment(Document):
         frappe.msgprint(_("Please click <strong>Update</strong> in order to save your changes."))
 
     def load_items(self):
+        self.items = []
         self._set_items(_get_replenishment_rules(self.warehouse, self.supplier))
 
     def pull_from_work_order(self, work_order):
@@ -152,7 +153,9 @@ def _get_replenishment_rule(item):
         "__islocal",
         "projected_qty",
         "actual_qty",
+        "__unsaved",
     ]
     for x in unused_keys:
-        del item_dict[x]
+        if x in item_dict:
+            del item_dict[x]
     return item_dict
