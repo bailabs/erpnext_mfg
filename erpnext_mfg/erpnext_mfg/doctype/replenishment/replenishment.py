@@ -32,6 +32,7 @@ class Replenishment(Document):
         if not self.warehouse or not self.supplier:
             frappe.throw(_("Please set your warehouse and/or supplier."))
         _clear_replenishment_rules(self.items, self.warehouse, self.supplier)
+        _update_replenishment_rules(self.items, self.warehouse, self.supplier)
         _create_replenishment_rules(self.items, self.warehouse, self.supplier)
         frappe.msgprint(_("Replenishment Rules are updated."))
 
@@ -106,12 +107,35 @@ def _create_replenishment_rules(items, warehouse, supplier):
     for item in items:
         if item.get("item") not in existing_items:
             rule = _get_replenishment_rule(item)
-            frappe.get_doc({
-                **rule,
-                "doctype": "Replenishment Rule",
-                "warehouse": warehouse,
-                "supplier": supplier,
-            }).insert()
+            frappe.get_doc(
+                {
+                    **rule,
+                    "doctype": "Replenishment Rule",
+                    "warehouse": warehouse,
+                    "supplier": supplier,
+                }
+            ).insert()
+
+
+def _update_replenishment_rules(items, warehouse, supplier):
+    existing_rules = frappe.get_all(
+        "Replenishment Rule",
+        fields=["name", "item"],
+        filters={
+            "warehouse": warehouse,
+            "supplier": supplier,
+        },
+    )
+    existing = {x.get("item"): x.get("name") for x in existing_rules}
+    item_names = list(existing.keys())
+    for item in items:
+        name = existing.get(item.get("item"))
+        if item.get("item") in item_names and name:
+            frappe.db.set_value(
+                "Replenishment Rule",
+                name,
+                _get_replenishment_rule(item),
+            )
 
 
 def _get_replenishment_rule(item):
