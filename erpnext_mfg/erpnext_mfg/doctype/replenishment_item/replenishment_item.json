@@ -12,7 +12,7 @@
   "min_qty",
   "max_qty",
   "order_qty",
-  "is_auto_order",
+  "disabled",
   "order_now"
  ],
  "fields": [
@@ -49,14 +49,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "0",
-   "description": "When `Auto Order` is set, `Max Qty` should be set.",
-   "fieldname": "is_auto_order",
-   "fieldtype": "Check",
-   "in_list_view": 1,
-   "label": "Auto Order"
-  },
-  {
    "columns": 1,
    "fieldname": "order_now",
    "fieldtype": "Button",
@@ -78,12 +70,20 @@
    "in_list_view": 1,
    "label": "Projected Qty",
    "read_only": 1
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Disabled"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-06-09 09:53:49.584087",
+ "modified": "2021-06-15 04:18:18.324278",
  "modified_by": "Administrator",
  "module": "Erpnext Mfg",
  "name": "Replenishment Item",
