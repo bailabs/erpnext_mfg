@@ -10,6 +10,10 @@ from erpnext_mfg.api.replenishment import with_qty_details
 
 
 class Replenishment(Document):
+    def on_update(self):
+        frappe.db.sql("DELETE FROM tabSingles WHERE doctype = 'Replenishment'")
+        frappe.db.sql("DELETE FROM `tabReplenishment Item`")
+
     def _set_items(self, items):
         for item in items:
             filled_item = with_qty_details(item, self.warehouse)
