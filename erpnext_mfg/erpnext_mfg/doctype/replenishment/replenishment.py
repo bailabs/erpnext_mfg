@@ -14,7 +14,9 @@ class Replenishment(Document):
         for item in items:
             filled_item = _with_qty_details(item, self.warehouse)
             self.append("items", filled_item)
-        frappe.msgprint(_("Please click <strong>Update</strong> in order to save your changes."))
+        frappe.msgprint(
+            _("Please click <strong>Update</strong> in order to save your changes.")
+        )
 
     def load_items(self):
         self.items = []
@@ -29,6 +31,7 @@ class Replenishment(Document):
     def update_replenishment_rules(self):
         if not self.warehouse or not self.supplier:
             frappe.throw(_("Please set your warehouse and/or supplier."))
+        _validate_items(self.items)
         _clear_replenishment_rules(self.items, self.warehouse, self.supplier)
         _update_replenishment_rules(self.items, self.warehouse, self.supplier)
         _create_replenishment_rules(self.items, self.warehouse, self.supplier)
@@ -133,6 +136,22 @@ def _update_replenishment_rules(items, warehouse, supplier):
                 "Replenishment Rule",
                 name,
                 _get_replenishment_rule(item),
+            )
+
+
+def _validate_items(items):
+    items = [x.get("item") for x in items]
+    tmp_duplicates = []
+    for item in items:
+        if item not in tmp_duplicates:
+            tmp_duplicates.append(item)
+        else:
+            frappe.throw(
+                _(
+                    "Unable to update rules. There are item <strong>{}</strong> in multiples.".format(
+                        item
+                    )
+                )
             )
 
 
