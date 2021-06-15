@@ -10,23 +10,19 @@ from erpnext_mfg.api.replenishment import get_item_qty_details
 
 
 class Replenishment(Document):
+    def _set_items(self, items):
+        for item in items:
+            filled_item = _with_qty_details(item, self.warehouse)
+            self.append("items", filled_item)
+
     def load_items(self):
-        replenishment_rules = _get_replenishment_rules(self.warehouse, self.supplier)
-        for data in replenishment_rules:
-            data = _with_qty_details(data, self.warehouse)
-            self.append("items", data)
+        self._set_items(_get_replenishment_rules(self.warehouse, self.supplier))
 
     def pull_from_work_order(self, work_order):
-        required_items = _get_required_items_by_work_order(work_order)
-        for data in required_items:
-            data = _with_qty_details(data, self.warehouse)
-            self.append("items", data)
+        self._set_items(_get_required_items_by_work_order(work_order))
 
     def pull_from_bin(self):
-        requested_items = _get_bin_requested_items_by_warehouse(self.warehouse)
-        for data in requested_items:
-            data = _with_qty_details(data, self.warehouse)
-            self.append("items", data)
+        self._set_items(_get_bin_requested_items_by_warehouse(self.warehouse))
 
     def update_replenishment_rules(self):
         if not self.warehouse or not self.supplier:
