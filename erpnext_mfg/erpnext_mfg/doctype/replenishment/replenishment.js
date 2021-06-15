@@ -28,19 +28,37 @@ frappe.ui.form.on("Replenishment Item", {
     _set_item_qty_details(frm, cdt, cdn);
   },
   order_now: function (frm, cdt, cdn) {
-    _replenish_item(cdn);
+    const child = locals[cdt][cdn];
+    _order_item(child.item, frm.doc.warehouse, frm.doc.supplier);
   },
   details: function (frm, cdt, cdn) {
     _show_details(cdn);
   },
 });
 
-async function _replenish_item(name) {
-  frappe.call({
-    method: "erpnext_mfg.api.replenishment.replenish_item",
-    args: { name },
-  });
+
+function _order_item(item, warehouse, supplier) {
+  frappe.confirm(
+    "Are you sure you want to order? Don't forget to apply your changes before proceeding.",
+    () => {
+      frappe.call({
+        method: "erpnext_mfg.api.replenishment.order_item",
+        args: { item, warehouse, supplier },
+        callback: function (r) {
+          if (r && r.message) {
+            frappe.msgprint({
+              title: __('Order'),
+              indicator: 'green',
+              message: __(`Purchase Order <strong>${r.message}</strong> is created for the Item <em>${item}</em>`),
+            });
+          }
+        },
+      });
+    },
+    () => {},
+  );
 }
+
 
 function _pull_requested_items(frm) {
   const d = new frappe.ui.Dialog({
