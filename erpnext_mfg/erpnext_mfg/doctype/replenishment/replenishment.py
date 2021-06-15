@@ -40,7 +40,17 @@ class Replenishment(Document):
         self._set_order_qty()
 
     def pull_from_bin(self):
-        self._set_items(_get_bin_requested_items_by_warehouse(self.warehouse))
+        requested_items = _get_bin_requested_items_by_warehouse(self.warehouse)
+        reorder_details = _get_reorder_details(requested_items)
+
+        for item in requested_items:
+            item_code = item.get("item")
+            if item_code in reorder_details:
+                item["min_qty"] = reorder_details[item_code].get("min_qty")
+                item["max_qty"] = reorder_details[item_code].get("max_qty")
+
+        self._set_items(requested_items)
+        self._set_order_qty()
 
     def update_replenishment_rules(self):
         if not self.warehouse or not self.supplier:
