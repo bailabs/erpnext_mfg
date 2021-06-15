@@ -27,28 +27,16 @@ class Replenishment(Document):
         self._set_items(_get_replenishment_rules(self.warehouse, self.supplier))
 
     def pull_from_work_order(self, work_order):
-        required_items = _get_required_items_by_work_order(work_order)
-        reorder_details = _get_reorder_details(required_items)
-
-        for item in required_items:
-            item_code = item.get("item")
-            if item_code in reorder_details:
-                item["min_qty"] = reorder_details[item_code].get("min_qty")
-                item["max_qty"] = reorder_details[item_code].get("max_qty")
-
+        required_items = _with_item_reorder_details(
+            _get_required_items_by_work_order(work_order)
+        )
         self._set_items(required_items)
-        self._set_order_qty()
+        self._set_order_qty()  # this should be after all the details is set
 
     def pull_from_bin(self):
-        requested_items = _get_bin_requested_items_by_warehouse(self.warehouse)
-        reorder_details = _get_reorder_details(requested_items)
-
-        for item in requested_items:
-            item_code = item.get("item")
-            if item_code in reorder_details:
-                item["min_qty"] = reorder_details[item_code].get("min_qty")
-                item["max_qty"] = reorder_details[item_code].get("max_qty")
-
+        requested_items = _with_item_reorder_details(
+            _get_bin_requested_items_by_warehouse(self.warehouse)
+        )
         self._set_items(requested_items)
         self._set_order_qty()
 
@@ -218,3 +206,13 @@ def _get_reorder_details(items):
         fields=["parent", "warehouse_reorder_level", "warehouse_reorder_qty"],
     )
     return {x.get("parent"): make_detail(x) for x in reorder_details}
+
+
+def _with_item_reorder_details(items):
+    reorder_details = _get_reorder_details(items)
+    for item in items:
+        item_code = item.item
+        if item_code in reorder_details:
+            item["min_qty"] = reorder_details[item_code].get("min_qty")
+            item["max_qty"] = reorder_details[item_code].get("max_qty")
+    return items
