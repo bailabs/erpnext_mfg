@@ -2,15 +2,6 @@ import frappe
 from frappe import _
 
 
-def _get_item_reorder_details(items):
-    item_reorders = frappe.get_all(
-        "Item Reorder",
-        filters={"parent": ("in", items)},
-        fields=["parent", "warehouse_reorder_level", "warehouse_reorder_qty"],
-    )
-    return {x.get("parent"): x for x in item_reorders}
-
-
 @frappe.whitelist()
 def get_item_qty_details(item, warehouse):
     data = frappe.get_all(
