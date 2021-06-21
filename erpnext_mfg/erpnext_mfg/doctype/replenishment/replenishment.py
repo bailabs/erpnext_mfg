@@ -79,10 +79,16 @@ def _get_required_items_by_work_order(work_order):
 
 
 def _get_bin_requested_items_by_warehouse(warehouse):
-    return frappe.get_all(
-        "Bin",
-        filters={"warehouse": warehouse},
-        fields=["item_code as item", "indented_qty as order_qty"],
+    return frappe.db.sql(
+        """
+        SELECT 
+            item_code as item,
+            indented_qty as order_qty
+        FROM `tabBin`
+        WHERE warehouse=%s
+        """,
+        warehouse,
+        as_dict=1
     )
 
 
