@@ -26,6 +26,7 @@ class Replenishment(Document):
         for item in self.items:
             item.order_qty = item.max_qty - item.projected_qty
 
+    @frappe.whitelist()
     def load_items(self):
         self.items = []
         self._set_items(_get_replenishment_rules(self.warehouse, self.supplier))
