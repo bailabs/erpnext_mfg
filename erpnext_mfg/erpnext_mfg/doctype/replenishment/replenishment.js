@@ -18,6 +18,8 @@ frappe.ui.form.on("Replenishment", {
         freeze: true,
       });
     });
+    frm.set_df_property("warehouse", "reqd", 1);
+    frm.set_df_property("supplier", "reqd", 1);
   },
   pull_requested_items_btn: _pull_requested_items,
   warehouse: _load_items,
