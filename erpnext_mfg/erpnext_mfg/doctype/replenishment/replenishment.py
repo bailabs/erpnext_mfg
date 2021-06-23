@@ -30,6 +30,7 @@ class Replenishment(Document):
         self.items = []
         self._set_items(_get_replenishment_rules(self.warehouse, self.supplier))
 
+    @frappe.whitelist()
     def pull_from_work_order(self, work_order):
         required_items = _with_item_reorder_details(
             _get_required_items_by_work_order(work_order)
@@ -37,6 +38,7 @@ class Replenishment(Document):
         self._set_items(required_items)
         self._set_order_qty()  # this should be after all the details is set
 
+    @frappe.whitelist()
     def pull_from_bin(self):
         requested_items = _with_item_reorder_details(
             _get_bin_requested_items_by_warehouse(self.warehouse)
