@@ -216,7 +216,11 @@ def _with_item_reorder_details(items):
     reorder_details = _get_reorder_details(items)
     for item in items:
         item_code = item.item
+        min_qty = 0
+        max_qty = 0
         if item_code in reorder_details:
-            item["min_qty"] = reorder_details[item_code].get("min_qty")
-            item["max_qty"] = reorder_details[item_code].get("max_qty")
+            min_qty = reorder_details[item_code].get("min_qty")
+            max_qty = reorder_details[item_code].get("max_qty")
+        item["min_qty"] = min_qty
+        item["max_qty"] = max_qty
     return items
