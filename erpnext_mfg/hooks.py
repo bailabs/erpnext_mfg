@@ -102,9 +102,9 @@ app_license = "MIT"
 # Scheduled Tasks
 # ---------------
 
-scheduler_events = {
-    "hourly": ["erpnext_mfg.events.replenish_auto_order.replenish_auto_order"],
-}
+# scheduler_events = {
+#     "hourly": ["erpnext_mfg.events.replenish_auto_order.replenish_auto_order"],
+# }
 
 # Testing
 # -------
