@@ -43,7 +43,6 @@ def order_item(item, warehouse, supplier):
     po.schedule_date = po.transaction_date
 
     po.save()
-    po.submit()
 
     return po.name
 
