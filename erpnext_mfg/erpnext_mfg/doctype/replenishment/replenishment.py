@@ -70,6 +70,7 @@ def _get_replenishment_rules(warehouse, supplier):
             "min_qty",
             "max_qty",
             "order_qty",
+            "supplier",
         ],
     )
 
@@ -92,7 +93,7 @@ def _get_bin_requested_items_by_warehouse(warehouse):
         WHERE warehouse=%s
         """,
         warehouse,
-        as_dict=1
+        as_dict=1,
     )
 
 

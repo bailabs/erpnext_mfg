@@ -8,6 +8,7 @@
   "item",
   "projected_qty",
   "actual_qty",
+  "supplier",
   "column_break_4",
   "min_qty",
   "max_qty",
@@ -78,12 +79,19 @@
    "fieldtype": "Check",
    "in_list_view": 1,
    "label": "Disabled"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier",
+   "options": "Supplier",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2021-06-15 04:18:18.324278",
+ "modified": "2021-07-23 04:23:55.831685",
  "modified_by": "Administrator",
  "module": "Erpnext Mfg",
  "name": "Replenishment Item",
