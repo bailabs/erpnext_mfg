@@ -49,8 +49,8 @@ class Replenishment(Document):
 
     @frappe.whitelist()
     def update_replenishment_rules(self):
-        if not self.warehouse or not self.supplier:
-            frappe.throw(_("Please set your warehouse and/or supplier."))
+        if not self.warehouse:
+            frappe.throw(_("Please set your warehouse"))
         _validate_items(self.items)
         _clear_replenishment_rules(self.items, self.warehouse, self.supplier)
         _update_replenishment_rules(self.items, self.warehouse, self.supplier)
