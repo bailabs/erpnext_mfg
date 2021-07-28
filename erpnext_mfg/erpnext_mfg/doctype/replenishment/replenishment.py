@@ -154,9 +154,9 @@ def _update_replenishment_rules(items, warehouse, supplier):
 
 
 def _validate_items(items):
-    items = [x.get("item") for x in items]
+    item_names = [x.get("item") for x in items]
     tmp_duplicates = []
-    for item in items:
+    for item in item_names:
         if item not in tmp_duplicates:
             tmp_duplicates.append(item)
         else:
@@ -167,6 +167,10 @@ def _validate_items(items):
                     )
                 )
             )
+
+    for item in items:
+        if not item.supplier:
+            frappe.throw(_("Please set the supplier on Item <strong>{}</strong>".format(item.item)))
 
 
 def _get_replenishment_rule(item):
