@@ -19,11 +19,9 @@ frappe.ui.form.on("Replenishment", {
       });
     });
     frm.set_df_property("warehouse", "reqd", 1);
-    frm.set_df_property("supplier", "reqd", 1);
   },
   pull_requested_items_btn: _pull_requested_items,
   warehouse: _load_items,
-  supplier: _load_items,
 });
 
 frappe.ui.form.on("Replenishment Item", {
@@ -39,7 +37,6 @@ frappe.ui.form.on("Replenishment Item", {
   },
 });
 
-
 function _order_item(item, warehouse, supplier) {
   frappe.confirm(
     "Are you sure you want to order? Don't forget to apply your changes before proceeding.",
@@ -50,18 +47,19 @@ function _order_item(item, warehouse, supplier) {
         callback: function (r) {
           if (r && r.message) {
             frappe.msgprint({
-              title: __('Order'),
-              indicator: 'green',
-              message: __(`Purchase Order <strong>${r.message}</strong> is created for the Item <em>${item}</em>`),
+              title: __("Order"),
+              indicator: "green",
+              message: __(
+                `Purchase Order <strong>${r.message}</strong> is created for the Item <em>${item}</em>`
+              ),
             });
           }
         },
       });
     },
-    () => {},
+    () => {}
   );
 }
-
 
 function _pull_requested_items(frm) {
   const d = new frappe.ui.Dialog({
@@ -118,7 +116,7 @@ function _show_details(name) {
 }
 
 async function _load_items(frm) {
-  if (!frm.doc.warehouse || !frm.doc.supplier) {
+  if (!frm.doc.warehouse) {
     return;
   }
   frm.call({

@@ -6,7 +6,6 @@
  "engine": "InnoDB",
  "field_order": [
   "warehouse",
-  "supplier",
   "section_break_2",
   "pull_requested_items_btn",
   "items"
@@ -30,14 +29,6 @@
    "fieldtype": "Section Break"
   },
   {
-   "description": "This will be the default Supplier to be set on new orders. If you want a specific Item to have a specific supplier, you can set it under the Item row",
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Supplier",
-   "options": "Supplier"
-  },
-  {
    "fieldname": "pull_requested_items_btn",
    "fieldtype": "Button",
    "label": "Pull Requested Items"
@@ -47,7 +38,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-06-15 08:34:42.875237",
+ "modified": "2021-07-26 09:13:31.201714",
  "modified_by": "Administrator",
  "module": "Erpnext Mfg",
  "name": "Replenishment",

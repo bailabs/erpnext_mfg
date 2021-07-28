@@ -29,7 +29,7 @@ class Replenishment(Document):
     @frappe.whitelist()
     def load_items(self):
         self.items = []
-        self._set_items(_get_replenishment_rules(self.warehouse, self.supplier))
+        self._set_items(_get_replenishment_rules(self.warehouse))
 
     @frappe.whitelist()
     def pull_from_work_order(self, work_order):
@@ -58,13 +58,10 @@ class Replenishment(Document):
         frappe.msgprint(_("Replenishment Rules are updated."))
 
 
-def _get_replenishment_rules(warehouse, supplier):
+def _get_replenishment_rules(warehouse):
     return frappe.get_all(
         "Replenishment Rule",
-        filters={
-            "warehouse": warehouse,
-            "supplier": supplier,
-        },
+        filters={"warehouse": warehouse},
         fields=[
             "item",
             "min_qty",
