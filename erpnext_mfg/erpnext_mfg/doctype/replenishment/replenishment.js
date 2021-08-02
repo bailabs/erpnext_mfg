@@ -30,7 +30,7 @@ frappe.ui.form.on("Replenishment Item", {
   },
   order_now: function (frm, cdt, cdn) {
     const child = locals[cdt][cdn];
-    _order_item(child.item, frm.doc.warehouse, frm.doc.supplier);
+    _order_item(child.item, frm.doc.warehouse, child.supplier);
   },
   details: function (frm, cdt, cdn) {
     _show_details(cdn);
