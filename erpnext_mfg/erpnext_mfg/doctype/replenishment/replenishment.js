@@ -69,7 +69,7 @@ function _pull_requested_items(frm) {
         label: "Source",
         fieldname: "source",
         fieldtype: "Select",
-        options: ["Work Order", "Bin with Requested Qty"],
+        options: ["Work Order", "Bin with Requested Qty", "By Item Reorder Details"],
         onchange: function () {
           const source = d.get_value("source");
           d.set_df_property("work_order", "hidden", source !== "Work Order");
@@ -94,6 +94,11 @@ function _pull_requested_items(frm) {
       } else if (values.source == "Bin with Requested Qty") {
         await frm.call({
           method: "pull_from_bin",
+          doc: frm.doc,
+        });
+      } else if (values.source == "By Item Reorder Details") {
+        await frm.call({
+          method: "pull_from_reorder_details",
           doc: frm.doc,
         });
       }

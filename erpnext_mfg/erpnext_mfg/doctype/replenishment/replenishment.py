@@ -24,7 +24,7 @@ class Replenishment(Document):
 
     def _set_order_qty(self):
         for item in self.items:
-            item.order_qty = item.max_qty - item.projected_qty
+            item.order_qty = (item.max_qty or 0) - (item.projected_qty or 0)
 
     @frappe.whitelist()
     def load_items(self):
@@ -44,6 +44,12 @@ class Replenishment(Document):
         requested_items = _with_item_reorder_details(
             _get_bin_requested_items_by_warehouse(self.warehouse)
         )
+        self._set_items(requested_items)
+        self._set_order_qty()
+
+    @frappe.whitelist()
+    def pull_from_reorder_details(self):
+        requested_items = _get_item_reorder_details_by_warehouse(self.warehouse)
         self._set_items(requested_items)
         self._set_order_qty()
 
@@ -91,6 +97,23 @@ def _get_bin_requested_items_by_warehouse(warehouse):
         """,
         warehouse,
         as_dict=1,
+    )
+
+
+def _get_item_reorder_details_by_warehouse(warehouse):
+    return frappe.db.sql(
+        """
+        SELECT 
+            ir.parent as item,
+            ir.warehouse_reorder_level as min_qty,
+            ir.warehouse_reorder_qty as max_qty
+        FROM `tabItem Reorder` AS ir
+        INNER JOIN `tabItem` i ON i.name = ir.parent
+        WHERE ir.warehouse=%s
+        AND i.is_purchase_item = 1
+        """,
+        warehouse,
+        as_dict=1
     )
 
 
