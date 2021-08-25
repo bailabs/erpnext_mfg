@@ -46,13 +46,18 @@ function _order_item(item, warehouse, supplier) {
         args: { item, warehouse, supplier },
         callback: function (r) {
           if (r && r.message) {
-            frappe.msgprint({
-              title: __("Order"),
-              indicator: "green",
-              message: __(
-                `Purchase Order <strong>${r.message}</strong> is created for the Item <em>${item}</em>`
-              ),
-            });
+            const is_bom = r.message.is_bom;
+            if (!is_bom) {
+              frappe.msgprint({
+                title: __("Order"),
+                indicator: "green",
+                message: __(
+                  `Purchase Order <strong>${r.message}</strong> is created for the Item <em>${item}</em>`
+                ),
+              });
+            } else {
+              _make_work_order_dialog(item, r.message.data);
+            }
           }
         },
       });
@@ -69,7 +74,11 @@ function _pull_requested_items(frm) {
         label: "Source",
         fieldname: "source",
         fieldtype: "Select",
-        options: ["Work Order", "Bin with Requested Qty", "By Item Reorder Details"],
+        options: [
+          "Work Order",
+          "Bin with Requested Qty",
+          "By Item Reorder Details",
+        ],
         onchange: function () {
           const source = d.get_value("source");
           d.set_df_property("work_order", "hidden", source !== "Work Order");
@@ -154,4 +163,51 @@ async function _set_item_qty_details(frm, cdt, cdn) {
     );
     frappe.model.set_value(cdt, cdn, "actual_qty", item_qty_details.actual_qty);
   }
+}
+
+function _make_work_order_dialog(item, boms) {
+  frappe.prompt(
+    [
+      {
+        label: "Item",
+        fieldname: "item",
+        fieldtype: "Link",
+        default: item,
+        read_only: 1,
+      },
+      {
+        label: "BOM",
+        fieldname: "bom",
+        fieldtype: "Link",
+        options: "BOM",
+        get_query: function () {
+          return {
+            filters: {
+              name: ["in", boms],
+            },
+          };
+        },
+      },
+    ],
+    (values) => {
+      frappe.call({
+        method: "erpnext_mfg.api.replenishment.make_work_order",
+        args: {
+          item: values.item,
+          bom: values.bom,
+        },
+        callback: function (r) {
+          if (r && r.message) {
+            frappe.msgprint({
+              title: __("Order"),
+              indicator: "green",
+              message: __(
+                `Work Order <strong>${r.message}</strong> is created for the Item <em>${item}</em>`
+              ),
+            });
+          }
+        },
+      });
+    }
+  );
 }
