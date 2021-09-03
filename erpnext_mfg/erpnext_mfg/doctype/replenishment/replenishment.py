@@ -55,12 +55,10 @@ class Replenishment(Document):
 
     @frappe.whitelist()
     def update_replenishment_rules(self):
-        if not self.warehouse:
-            frappe.throw(_("Please set your warehouse"))
         _validate_items(self.items)
-        _clear_replenishment_rules(self.items, self.warehouse)
-        _update_replenishment_rules(self.items, self.warehouse)
-        _create_replenishment_rules(self.items, self.warehouse)
+        _clear_replenishment_rules(self.items)
+        _update_replenishment_rules(self.items)
+        _create_replenishment_rules(self.items)
         frappe.msgprint(_("Replenishment Rules are updated."))
 
 
@@ -78,6 +76,7 @@ def _get_replenishment_rules(warehouse=None):
             "max_qty",
             "order_qty",
             "supplier",
+            "warehouse",
         ],
     )
 
@@ -121,11 +120,10 @@ def _get_item_reorder_details_by_warehouse(warehouse):
     )
 
 
-def _clear_replenishment_rules(items, warehouse):
+def _clear_replenishment_rules(items):
     existing_rules = frappe.get_all(
         "Replenishment Rule",
         fields=["name", "item"],
-        filters={"warehouse": warehouse},
     )
     item_names = [x.get("item") for x in items]
     for rule in existing_rules:
@@ -133,26 +131,24 @@ def _clear_replenishment_rules(items, warehouse):
             frappe.delete_doc("Replenishment Rule", rule.get("name"))
 
 
-def _create_replenishment_rules(items, warehouse):
+def _create_replenishment_rules(items):
     existing_rules = frappe.get_all(
         "Replenishment Rule",
         fields=["item"],
-        filters={"warehouse": warehouse},
     )
     existing_items = [x.get("item") for x in existing_rules]
     for item in items:
         if item.get("item") not in existing_items:
             rule = _get_replenishment_rule(item)
             frappe.get_doc(
-                {**rule, "doctype": "Replenishment Rule", "warehouse": warehouse}
+                {**rule, "doctype": "Replenishment Rule"}
             ).insert()
 
 
-def _update_replenishment_rules(items, warehouse):
+def _update_replenishment_rules(items):
     existing_rules = frappe.get_all(
         "Replenishment Rule",
         fields=["name", "item"],
-        filters={"warehouse": warehouse},
     )
     existing = {x.get("item"): x.get("name") for x in existing_rules}
     item_names = list(existing.keys())
