@@ -16,7 +16,7 @@ class Replenishment(Document):
 
     def _set_items(self, items):
         for item in items:
-            filled_item = with_qty_details(item, self.warehouse)
+            filled_item = with_qty_details(item, item.warehouse)
             self.append("items", filled_item)
         frappe.msgprint(
             _("Please click <strong>Update</strong> in order to save your changes.")
