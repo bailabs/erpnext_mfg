@@ -18,7 +18,7 @@ frappe.ui.form.on("Replenishment", {
         freeze: true,
       });
     });
-    frm.set_df_property("warehouse", "reqd", 1);
+    _load_items(frm);
   },
   pull_requested_items_btn: _pull_requested_items,
   warehouse: _load_items,
@@ -130,9 +130,6 @@ function _show_details(name) {
 }
 
 async function _load_items(frm) {
-  if (!frm.doc.warehouse) {
-    return;
-  }
   frm.call({
     method: "load_items",
     doc: frm.doc,

@@ -64,10 +64,14 @@ class Replenishment(Document):
         frappe.msgprint(_("Replenishment Rules are updated."))
 
 
-def _get_replenishment_rules(warehouse):
+def _get_replenishment_rules(warehouse=None):
+    filters = {}
+    if warehouse:
+        filters["warehouse"] = warehouse
+
     return frappe.get_all(
         "Replenishment Rule",
-        filters={"warehouse": warehouse},
+        filters=filters,
         fields=[
             "item",
             "min_qty",
