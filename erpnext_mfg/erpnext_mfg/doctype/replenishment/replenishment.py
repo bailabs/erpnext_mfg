@@ -14,9 +14,9 @@ class Replenishment(Document):
         frappe.db.sql("DELETE FROM tabSingles WHERE doctype = 'Replenishment'")
         frappe.db.sql("DELETE FROM `tabReplenishment Item`")
 
-    def _set_items(self, items):
+    def _set_items(self, items, warehouse=None):
         for item in items:
-            filled_item = with_qty_details(item, item.warehouse)
+            filled_item = with_qty_details(item, warehouse or item.warehouse)
             self.append("items", filled_item)
         frappe.msgprint(
             _("Please click <strong>Update</strong> in order to save your changes.")
@@ -41,16 +41,20 @@ class Replenishment(Document):
 
     @frappe.whitelist()
     def pull_from_bin(self):
+        if not self.warehouse:
+            frappe.throw(_("Please set your warehouse!"))
         requested_items = _with_item_reorder_details(
             _get_bin_requested_items_by_warehouse(self.warehouse)
         )
-        self._set_items(requested_items)
+        self._set_items(requested_items, self.warehouse)
         self._set_order_qty()
 
     @frappe.whitelist()
     def pull_from_reorder_details(self):
+        if not self.warehouse:
+            frappe.throw(_("Please set your warehouse!"))
         requested_items = _get_item_reorder_details_by_warehouse(self.warehouse)
-        self._set_items(requested_items)
+        self._set_items(requested_items, self.warehouse)
         self._set_order_qty()
 
     @frappe.whitelist()

@@ -14,6 +14,7 @@ def get_item_qty_details(item, warehouse):
         return {
             "projected_qty": data.get("projected_qty"),
             "actual_qty": data.get("actual_qty"),
+            "warehouse": warehouse,
         }
     return None
 
