@@ -184,6 +184,14 @@ def _validate_items(items):
                     )
                 )
             )
+        if not item.warehouse:
+            frappe.throw(
+                _(
+                    "Please set the supplier on Item <strong>{}</strong>".format(
+                        item.item
+                    )
+                )
+            )
 
 
 def _get_replenishment_rule(item):
